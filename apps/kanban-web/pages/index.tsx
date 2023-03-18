@@ -7,10 +7,12 @@ export function Index() {
         <p>red</p>
       </div>
 
-      <Button color="purple">Button Primary L</Button>
+      <Button>a</Button>
+
+      {/* <Button color="purple">Button Primary L</Button>
       <Button color="purple" size="small">
         Button Primary L
-      </Button>
+      </Button> */}
       <style jsx>
         {`
           .boxs {
