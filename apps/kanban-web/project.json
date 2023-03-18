@@ -11,7 +11,13 @@
       "options": {
         "root": "apps/kanban-web",
         "outputPath": "dist/apps/kanban-web",
-        "assets": []
+        "assets": [
+          {
+            "glob": "**/*.(css|scss)",
+            "input": "libs/client/assets/src/styles",
+            "output": "styles"
+          }
+        ]
       },
       "configurations": {
         "development": {

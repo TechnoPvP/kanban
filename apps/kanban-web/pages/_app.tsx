@@ -1,6 +1,8 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import './styles.css';
+import '../public/styles/shared-root.css';
+import '../public/styles/reset.scss';
+import '../public/styles/shared-global.scss';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (

@@ -1,6 +1,5 @@
 {
-    "dotenv.enableAutocloaking": false,
-    "cSpell.words": [
-        "kanban"
-    ]
+  "dotenv.enableAutocloaking": false,
+  "cSpell.words": ["kanban"],
+  "cssvar.files": ["libs/client/assets/src/styles/shared-root.css"]
 }
