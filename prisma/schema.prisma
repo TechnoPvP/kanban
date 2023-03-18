@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model Status {
+
+// }
+
+model Task {
+  id         Int      @id @default(autoincrement())
+  name       String
+  status     String
+  column     Column?  @relation(fields: [column_id], references: [id])
+  column_id  Int?
+  created_at DateTime @default(now())
+}
+
+model Column {
+  id          Int      @id @default(autoincrement())
+  name        String
+  color       String
+  order       Int
+  done_column Boolean  @default(false)
+  tasks       Task[]
+  board       Board?   @relation(fields: [baord_id], references: [id])
+  baord_id    Int?
+  created_at  DateTime @default(now())
+}
+
+model Board {
+  id         Int      @id @default(autoincrement())
+  name       String
+  columns    Column[]
+  created_at DateTime @default(now())
+}

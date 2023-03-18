@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type BoardEntity {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Query {
+  boards: [BoardEntity!]!
+  board(id: Int!): BoardEntity!
+}
+
+type Mutation {
+  createBoard(createBoardInput: CreateBoardInput!): BoardEntity!
+  updateBoard(updateBoardInput: UpdateBoardInput!): BoardEntity!
+  removeBoard(id: Int!): BoardEntity!
+}
+
+input CreateBoardInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateBoardInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
