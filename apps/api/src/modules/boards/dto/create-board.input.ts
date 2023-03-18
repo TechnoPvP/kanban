@@ -1,7 +1,10 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
+import { Board, Prisma } from '@prisma/client';
 
 @InputType()
-export class CreateBoardInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+export class CreateBoardInput implements Prisma.BoardCreateInput {
+  @Field({ description: 'Board name' })
+  name!: string;
+
+  columns?: Prisma.ColumnCreateNestedManyWithoutBoardInput;
 }

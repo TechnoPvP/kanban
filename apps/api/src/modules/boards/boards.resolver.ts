@@ -14,13 +14,13 @@ export class BoardsResolver {
   }
 
   @Query(() => [BoardEntity], { name: 'boards' })
-  findAll() {
+  list() {
     return this.boardsService.findAll();
   }
 
   @Query(() => BoardEntity, { name: 'board' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.boardsService.findOne(id);
+  retrieve(@Args('id', { type: () => Int }) id: number) {
+    return this.boardsService.retrieve(id);
   }
 
   @Mutation(() => BoardEntity)

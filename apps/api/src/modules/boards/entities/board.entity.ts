@@ -1,7 +1,13 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { Board } from '@prisma/client';
 
 @ObjectType()
-export class BoardEntity implements BoardEntity {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+export class BoardEntity implements Board {
+  @Field(() => ID, { description: 'Board ID' })
+  id: number;
+
+  @Field({ nullable: false })
+  name: string;
+
+  created_at: Date;
 }

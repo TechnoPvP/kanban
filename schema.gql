@@ -3,8 +3,9 @@
 # ------------------------------------------------------
 
 type BoardEntity {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Board ID"""
+  id: ID!
+  name: String!
 }
 
 type Query {
@@ -19,12 +20,12 @@ type Mutation {
 }
 
 input CreateBoardInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Board name"""
+  name: String!
 }
 
 input UpdateBoardInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  """Board name"""
+  name: String
   id: Int!
 }

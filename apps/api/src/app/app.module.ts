@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { BoardsModule } from '../modules/boards/boards.module';
+import { PrismaModule } from '../common/services/database/prisma.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { BoardsModule } from '../modules/boards/boards.module';
       autoSchemaFile: join(process.cwd(), 'schema.gql'),
       playground: true,
     }),
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
