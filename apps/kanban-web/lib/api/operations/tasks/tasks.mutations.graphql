@@ -1,5 +1,5 @@
-mutation CreateTask($name: String!, $status: String!) {
-  createTask(createTaskInput: { name: $name, status: $status }) {
+mutation CreateTask($name: String!, $status: String!, $column_id: Int!) {
+  createTask(createTaskInput: { name: $name, status: $status, column_id: $column_id }) {
     id
     name
     status

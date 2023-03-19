@@ -11,6 +11,9 @@ export class CreateTaskInput
   @Field({ nullable: false })
   status: string;
 
+  @Field(() => Int, {nullable: false})
+  column_id: number;
+
   @Field(() => String, { nullable: true })
   created_at?: string | Date;
 }

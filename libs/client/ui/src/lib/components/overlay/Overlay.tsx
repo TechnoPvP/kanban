@@ -2,12 +2,13 @@ import React, { FC } from 'react';
 
 export interface OverlayProps {
   zIndex?: number;
+  onClick?: () => void;
 }
 
 export const Overlay: FC<OverlayProps> = ({ zIndex = 10, ...props }) => {
   return (
     <>
-      <div className="overlay"></div>
+      <div className="overlay" onClick={props?.onClick}></div>
 
       <style jsx>{`
         .overlay {

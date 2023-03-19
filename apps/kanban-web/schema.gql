@@ -86,12 +86,14 @@ input UpdateColumnInput {
 input CreateTaskInput {
   name: String!
   status: String!
+  column_id: Int!
   created_at: String
 }
 
 input UpdateTaskInput {
   name: String
   status: String
+  column_id: Int
   created_at: String
   id: Int!
 }

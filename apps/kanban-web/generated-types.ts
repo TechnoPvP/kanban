@@ -69,6 +69,7 @@ export type CreateColumnInput = {
 };
 
 export type CreateTaskInput = {
+  column_id: Scalars['Int'];
   created_at?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   status: Scalars['String'];
@@ -181,6 +182,7 @@ export type UpdateColumnInput = {
 };
 
 export type UpdateTaskInput = {
+  column_id?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['String']>;
   id: Scalars['Int'];
   name?: InputMaybe<Scalars['String']>;
@@ -204,6 +206,7 @@ export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: '
 export type CreateTaskMutationVariables = Exact<{
   name: Scalars['String'];
   status: Scalars['String'];
+  column_id: Scalars['Int'];
 }>;
 
 
@@ -271,8 +274,10 @@ export const useRetrieveBoardQuery = <
       options
     );
 export const CreateTaskDocument = `
-    mutation CreateTask($name: String!, $status: String!) {
-  createTask(createTaskInput: {name: $name, status: $status}) {
+    mutation CreateTask($name: String!, $status: String!, $column_id: Int!) {
+  createTask(
+    createTaskInput: {name: $name, status: $status, column_id: $column_id}
+  ) {
     id
     name
     status

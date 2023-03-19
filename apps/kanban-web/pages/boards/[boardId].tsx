@@ -3,7 +3,7 @@ import {
   useRetrieveBoardQuery,
 } from '../../generated-types';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import BoardHeader from '../../lib/views/board/BoardHeader';
 import { Button } from '@kanban/client/ui';
 import EmptyBoard from '../../lib/views/board/EmptyBoard';
@@ -19,7 +19,11 @@ const Board = () => {
     { id: +router.query.boardId },
     { enabled: !!+router.query.boardId, onSuccess: () => console.log }
   );
-  const { mutate, mutateAsync } = useCreateTaskMutation({});
+  const { mutateAsync } = useCreateTaskMutation({});
+
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState<
+    boolean | 'create' | 'update'
+  >(false);
 
   if (isLoading) return <div>Loading....</div>;
 
@@ -29,19 +33,30 @@ const Board = () => {
         name={data.board.name}
         actions={
           <>
-            <Button variant="primary" disabled={!data?.board?.columns?.length}>
+            <Button
+              variant="primary"
+              disabled={!data?.board?.columns?.length}
+              onClick={() => setIsTaskModalOpen('create')}
+            >
               Add new task
             </Button>
           </>
         }
       />
 
-      <TaskModal
-        variant="create"
-        onPrimaryAction={({ data }) => {
-          return mutateAsync({ name: data.title, status: 'done' });
-        }}
-      />
+      {isTaskModalOpen && typeof isTaskModalOpen === 'string' && (
+        <TaskModal
+          onClose={() => setIsTaskModalOpen(false)}
+          variant={isTaskModalOpen}
+          onPrimaryAction={({ data: task }) => {
+            return mutateAsync({
+              name: task.title,
+              status: 'done',
+              column_id: data.board.columns[0].id,
+            });
+          }}
+        />
+      )}
 
       <div className="columns">
         {!data.board.columns.length ? (

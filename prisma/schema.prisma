@@ -14,13 +14,23 @@ datasource db {
 
 // }
 
+model Subtask {
+  id           Int     @id @default(autoincrement())
+  title        String
+  is_completed Boolean @default(false)
+  task         Task?   @relation(fields: [task_id], references: [id])
+  task_id      Int?
+}
+
+// TODO: Add board_id to task
 model Task {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   name       String
   status     String
-  column     Column?  @relation(fields: [column_id], references: [id])
+  subtasks   Subtask[]
+  column     Column?   @relation(fields: [column_id], references: [id])
   column_id  Int?
-  created_at DateTime @default(now())
+  created_at DateTime  @default(now())
 }
 
 model Column {

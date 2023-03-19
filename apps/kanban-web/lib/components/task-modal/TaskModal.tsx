@@ -5,12 +5,13 @@ import {
   Controller,
   SubmitErrorHandler,
   SubmitHandler,
-  useForm
+  useForm,
 } from 'react-hook-form';
 import { z } from 'zod';
 
 export interface TaskModalProps {
   variant: 'update' | 'create';
+  onClose: () => void;
   /**
    * Primary action would either be to create or update the task
    */
@@ -42,9 +43,9 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
   const handleSuccessfulSubmit: SubmitHandler<CreateTaskSchema> = async (
     data
   ) => {
-    const response = await onPrimaryAction({ data });
+    props.onClose();
 
-    console.debug(response);
+    const response = await onPrimaryAction({ data });
   };
 
   const handleInvalidSubmit: SubmitErrorHandler<CreateTaskSchema> = (error) => {
@@ -53,7 +54,7 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
 
   return (
     <>
-      <Overlay />
+      <Overlay onClick={props?.onClose} />
 
       <form
         className="modal"
@@ -91,11 +92,7 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
           <TaskModalSubtask />
         </div>
 
-        <Button
-          type="submit"
-          size="small"
-          variant="primary"
-        >
+        <Button type="submit" size="small" variant="primary">
           Create Task
         </Button>
       </form>
