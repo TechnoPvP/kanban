@@ -12,7 +12,7 @@ import { PrismaModule } from '../common/services/database/prisma.module';
     BoardsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'schema.gql'),
+      autoSchemaFile: join(process.cwd(), 'apps/kanban-web/schema.gql'),
       playground: true,
     }),
     PrismaModule,

@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@kanban/client/assets": ["libs/client/assets/src/index.ts"],
-      "@kanban/client/ui": ["libs/client/ui/src/index.ts"]
+      "@kanban/client/ui": ["libs/client/ui/src/index.ts"],
+      "@kanban/utils": ["libs/shared/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

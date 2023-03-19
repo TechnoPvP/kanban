@@ -1,0 +1,11 @@
+fragment AllBoardData on BoardEntity {
+  id
+  name
+}
+
+query ListBoards {
+  boards {
+    id
+    name
+  }
+}

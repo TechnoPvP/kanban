@@ -6,12 +6,20 @@
   "targets": {
     "build": {
       "executor": "@nrwl/next:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "root": "apps/kanban-web",
         "outputPath": "dist/apps/kanban-web",
-        "assets": []
+        "assets": [
+          {
+            "glob": "**/*.(css|scss)",
+            "input": "libs/client/assets/src/styles",
+            "output": "styles"
+          }
+        ]
       },
       "configurations": {
         "development": {
@@ -46,7 +54,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/kanban-web/jest.config.ts",
         "passWithNoTests": true
@@ -60,11 +70,31 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/kanban-web/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/kanban-web/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "gql:compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen",
+        "cwd": "apps/kanban-web"
+      }
+    },
+    "gql:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen -w",
+        "cwd": "apps/kanban-web"
       }
     }
   },
-  "tags": ["client"]
+  "tags": [
+    "client"
+  ]
 }

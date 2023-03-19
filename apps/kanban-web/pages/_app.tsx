@@ -1,16 +1,34 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import './styles.css';
+import '../public/styles/shared-root.css';
+import '../public/styles/reset.scss';
+import '../public/styles/shared-global.scss';
+import '../public/styles/global.scss';
+import { ReactElement, ReactNode } from 'react';
+import { NextPage } from 'next';
+import RootLayout from '../lib/layout/RootLayout';
 
-function CustomApp({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+export type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <>
       <Head>
-        <title>Welcome to kanban-web!</title>
+        <title>Airhublabs Kanban</title>
       </Head>
-      <main className="app">
-        <Component {...pageProps} />
-      </main>
+
+      {getLayout(
+        <RootLayout>
+          <Component {...pageProps} />
+        </RootLayout>
+      )}
     </>
   );
 }
