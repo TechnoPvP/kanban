@@ -17,8 +17,12 @@ export class BoardsService {
     return board;
   }
 
-  async findAll() {
-    const boards = await this.prisma.board.findMany();
+  async list(): Promise<BoardEntity[]> {
+    const boards = await this.prisma.board.findMany({
+      include: {
+        columns: { include: { tasks: { include: { subtasks: true } } } },
+      },
+    });
 
     return boards;
   }
@@ -26,7 +30,9 @@ export class BoardsService {
   async retrieve(id: number): Promise<BoardEntity> {
     const board = await this.prisma.board.findUnique({
       where: { id },
-      include: { columns: { include: { tasks: true } } },
+      include: {
+        columns: { include: { tasks: { include: { subtasks: true } } } },
+      },
     });
 
     return board;

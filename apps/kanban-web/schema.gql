@@ -2,10 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type SubtaskEntity {
+  id: Int!
+  title: String!
+  is_completed: Boolean!
+  task_id: Int!
+}
+
 type TaskEntity {
   id: Int!
   name: String!
   status: String!
+  subtasks: [SubtaskEntity!]!
   column_id: Int!
   created_at: DateTime!
 }

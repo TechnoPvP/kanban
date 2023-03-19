@@ -15,7 +15,7 @@ export class BoardsResolver {
 
   @Query(() => [BoardEntity], { name: 'boards' })
   list() {
-    return this.boardsService.findAll();
+    return this.boardsService.list();
   }
 
   @Query(() => BoardEntity, { name: 'board' })

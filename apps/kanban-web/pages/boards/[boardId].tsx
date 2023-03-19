@@ -1,6 +1,8 @@
 import {
+  TaskEntity,
   useCreateTaskMutation,
   useRetrieveBoardQuery,
+  useUpdateTaskMutation,
 } from '../../generated-types';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -11,6 +13,10 @@ import BoardColumn from '../../lib/views/board/BoardColumn';
 import Task from '../../lib/views/board/Task';
 import TaskModal from '../../lib/components/task-modal/TaskModal';
 
+/* TODO: Suggested features
+  - Remember last board they were on (local storage)
+*/
+
 /* Note: Also have the ability to use server side rendering.  */
 /* TODO: Handle errors */
 const Board = () => {
@@ -20,9 +26,14 @@ const Board = () => {
     { enabled: !!+router.query.boardId, onSuccess: () => console.log }
   );
   const { mutateAsync } = useCreateTaskMutation({});
+  const updateTaskMutation = useUpdateTaskMutation({});
 
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<
-    boolean | 'create' | 'update'
+    false | 'create' | 'update'
+  >(false);
+
+  const [isUpdateTaskModalOpen, setIsUpdateTaskModalOpen] = useState<
+    false | TaskEntity
   >(false);
 
   if (isLoading) return <div>Loading....</div>;
@@ -58,6 +69,22 @@ const Board = () => {
         />
       )}
 
+      {isUpdateTaskModalOpen && (
+        <TaskModal
+          defaultValues={isUpdateTaskModalOpen}
+          variant="update"
+          onClose={() => setIsUpdateTaskModalOpen(false)}
+          onPrimaryAction={({ data: task }) => {
+            return updateTaskMutation.mutateAsync({
+              id: task.id,
+              column_id: data.board.columns[0].id,
+              name: task.title,
+              status: 'done',
+            });
+          }}
+        />
+      )}
+
       <div className="columns">
         {!data.board.columns.length ? (
           <EmptyBoard />
@@ -69,6 +96,7 @@ const Board = () => {
                 name={column.name}
                 color={column.color}
                 key={column.id}
+                tasks={column?.tasks?.length}
               >
                 {column.tasks.map((task) => (
                   <Task
@@ -76,6 +104,16 @@ const Board = () => {
                     title={task.name}
                     subtasksCount={0}
                     subtasksCompleted={10}
+                    onClick={() =>
+                      setIsUpdateTaskModalOpen({
+                        column_id: task.column_id,
+                        created_at: task.created_at,
+                        id: task.id,
+                        name: task.name,
+                        status: task.status,
+                        subtasks: [],
+                      })
+                    }
                   />
                 ))}
               </BoardColumn>

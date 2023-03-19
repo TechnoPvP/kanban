@@ -5,6 +5,7 @@ export interface TaskProps {
   description?: string;
   subtasksCount: number;
   subtasksCompleted: number;
+  onClick?: () => void
 }
 
 const Task: FC<TaskProps> = ({
@@ -16,7 +17,7 @@ const Task: FC<TaskProps> = ({
 }) => {
   return (
     <>
-      <div className="task">
+      <div className="task" onClick={props?.onClick}>
         <h1 className="task__title">{title}</h1>
         {description && <p>{description}</p>}
 

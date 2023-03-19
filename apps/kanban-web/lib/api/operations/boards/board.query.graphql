@@ -26,6 +26,9 @@ query RetrieveBoard($id: Int!) {
         id
         name
         status
+        column_id
+        status
+        created_at
       }
     }
     created_at

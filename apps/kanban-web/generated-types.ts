@@ -158,6 +158,14 @@ export type QueryTaskArgs = {
   id: Scalars['Int'];
 };
 
+export type SubtaskEntity = {
+  __typename?: 'SubtaskEntity';
+  id: Scalars['Int'];
+  is_completed: Scalars['Boolean'];
+  task_id: Scalars['Int'];
+  title: Scalars['String'];
+};
+
 export type TaskEntity = {
   __typename?: 'TaskEntity';
   column_id: Scalars['Int'];
@@ -165,6 +173,7 @@ export type TaskEntity = {
   id: Scalars['Int'];
   name: Scalars['String'];
   status: Scalars['String'];
+  subtasks: Array<SubtaskEntity>;
 };
 
 export type UpdateBoardInput = {
@@ -201,7 +210,7 @@ export type RetrieveBoardQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: 'BoardEntity', id: string, name: string, created_at: any, columns: Array<{ __typename?: 'ColumnEntity', id: number, name: string, color?: string | null, order?: number | null, done_column?: boolean | null, created_at: any, tasks: Array<{ __typename?: 'TaskEntity', id: number, name: string, status: string }> }> } };
+export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: 'BoardEntity', id: string, name: string, created_at: any, columns: Array<{ __typename?: 'ColumnEntity', id: number, name: string, color?: string | null, order?: number | null, done_column?: boolean | null, created_at: any, tasks: Array<{ __typename?: 'TaskEntity', id: number, name: string, status: string, column_id: number, created_at: any }> }> } };
 
 export type CreateTaskMutationVariables = Exact<{
   name: Scalars['String'];
@@ -211,6 +220,16 @@ export type CreateTaskMutationVariables = Exact<{
 
 
 export type CreateTaskMutation = { __typename?: 'Mutation', createTask: { __typename?: 'TaskEntity', id: number, name: string, status: string, created_at: any } };
+
+export type UpdateTaskMutationVariables = Exact<{
+  column_id: Scalars['Int'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  status: Scalars['String'];
+}>;
+
+
+export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask: { __typename?: 'TaskEntity', id: number, name: string, status: string, column_id: number, created_at: any, subtasks: Array<{ __typename?: 'SubtaskEntity', id: number, title: string, is_completed: boolean }> } };
 
 export const AllBoardDataFragmentDoc = `
     fragment AllBoardData on BoardEntity {
@@ -255,6 +274,9 @@ export const RetrieveBoardDocument = `
         id
         name
         status
+        column_id
+        status
+        created_at
       }
     }
     created_at
@@ -292,5 +314,32 @@ export const useCreateTaskMutation = <
     useMutation<CreateTaskMutation, TError, CreateTaskMutationVariables, TContext>(
       ['CreateTask'],
       (variables?: CreateTaskMutationVariables) => fetcher<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument, variables)(),
+      options
+    );
+export const UpdateTaskDocument = `
+    mutation UpdateTask($column_id: Int!, $id: Int!, $name: String!, $status: String!) {
+  updateTask(
+    updateTaskInput: {column_id: $column_id, id: $id, name: $name, status: $status}
+  ) {
+    id
+    name
+    status
+    column_id
+    subtasks {
+      id
+      title
+      is_completed
+    }
+    created_at
+  }
+}
+    `;
+export const useUpdateTaskMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateTaskMutation, TError, UpdateTaskMutationVariables, TContext>) =>
+    useMutation<UpdateTaskMutation, TError, UpdateTaskMutationVariables, TContext>(
+      ['UpdateTask'],
+      (variables?: UpdateTaskMutationVariables) => fetcher<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, variables)(),
       options
     );

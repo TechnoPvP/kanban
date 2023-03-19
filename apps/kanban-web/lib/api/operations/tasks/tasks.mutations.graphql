@@ -1,8 +1,37 @@
 mutation CreateTask($name: String!, $status: String!, $column_id: Int!) {
-  createTask(createTaskInput: { name: $name, status: $status, column_id: $column_id }) {
+  createTask(
+    createTaskInput: { name: $name, status: $status, column_id: $column_id }
+  ) {
     id
     name
     status
+    created_at
+  }
+}
+
+mutation UpdateTask(
+  $column_id: Int!
+  $id: Int!
+  $name: String!
+  $status: String!
+) {
+  updateTask(
+    updateTaskInput: {
+      column_id: $column_id
+      id: $id
+      name: $name
+      status: $status
+    }
+  ) {
+    id
+    name
+    status
+    column_id
+    subtasks {
+      id
+      title
+      is_completed
+    }
     created_at
   }
 }

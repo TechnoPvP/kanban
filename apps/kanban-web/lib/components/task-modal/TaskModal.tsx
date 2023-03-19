@@ -1,31 +1,50 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Overlay, TextInput } from '@kanban/client/ui';
-import { FC, useState } from 'react';
+import { SubtaskEntity, TaskEntity } from '../../../generated-types';
+import { FC, useRef, useState } from 'react';
 import {
+  Control,
   Controller,
   SubmitErrorHandler,
   SubmitHandler,
+  useFieldArray,
   useForm,
+  useFormContext,
 } from 'react-hook-form';
 import { z } from 'zod';
 
 export interface TaskModalProps {
   variant: 'update' | 'create';
   onClose: () => void;
+  defaultValues?: TaskEntity;
   /**
    * Primary action would either be to create or update the task
    */
-  onPrimaryAction: (params: { data: CreateTaskSchema }) => Promise<any>;
+  onPrimaryAction: (params: {
+    data: CreateTaskSchema & { id?: number };
+  }) => Promise<any>;
 }
 
 export const createTaskSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
+  subtasks: z
+    .object({
+      title: z.string(),
+      is_completed: z.boolean(),
+    })
+    .array()
+    .optional(),
 });
 
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
 
-const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
+const TaskModal: FC<TaskModalProps> = ({
+  onPrimaryAction,
+  defaultValues,
+  variant,
+  ...props
+}) => {
   const {
     handleSubmit,
     control,
@@ -37,7 +56,7 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
     resolver: zodResolver(createTaskSchema),
     mode: 'all',
     reValidateMode: 'onChange',
-    defaultValues: { title: '', description: '' },
+    defaultValues: { title: defaultValues?.name ?? '', description: '' },
   });
 
   const handleSuccessfulSubmit: SubmitHandler<CreateTaskSchema> = async (
@@ -45,12 +64,18 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
   ) => {
     props.onClose();
 
-    const response = await onPrimaryAction({ data });
+    const response = await onPrimaryAction({
+      data: { ...data, id: defaultValues?.id },
+    });
+
+    console.log(response);
   };
 
   const handleInvalidSubmit: SubmitErrorHandler<CreateTaskSchema> = (error) => {
     console.log(error);
   };
+
+  const { current: isCreateModal } = useRef(variant === 'create');
 
   return (
     <>
@@ -60,7 +85,9 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
         className="modal"
         onSubmit={handleSubmit(handleSuccessfulSubmit, handleInvalidSubmit)}
       >
-        <h1 className="modal__title">Add new subtask</h1>
+        <h1 className="modal__title">
+          {isCreateModal ? 'Add new' : 'Update'} task
+        </h1>
 
         <Controller
           name="title"
@@ -89,11 +116,14 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
         />
 
         <div className="subtasks">
-          <TaskModalSubtask />
+          <TaskModalSubtask
+            control={control}
+            showPlaceholderSubtasks={variant === 'create' ? true : false}
+          />
         </div>
 
         <Button type="submit" size="small" variant="primary">
-          Create Task
+          {isCreateModal ? 'Create Task' : 'Save Changes'}
         </Button>
       </form>
 
@@ -136,17 +166,29 @@ const TaskModal: FC<TaskModalProps> = ({ onPrimaryAction, ...props }) => {
 
 export default TaskModal;
 
+interface SubtasksWithAnyNumber {
+  [key: `subtasks${number}.title`]: TaskEntity;
+}
 export interface TaskModalSubtaskProps {
-  subtasks?: { value: string }[];
+  subtasks?: SubtaskEntity[];
+  control: Control<CreateTaskSchema & SubtasksWithAnyNumber>;
+  /**
+   * @description
+   * When there are no subtasks show two placeholder subtasks
+   */
+  showPlaceholderSubtasks?: boolean;
 }
 
+export type AnyNumber = `subtasks[1]title`;
 const TaskModalSubtask: FC<TaskModalSubtaskProps> = ({
   subtasks: subtaskList,
+  showPlaceholderSubtasks = true,
+  control,
   ...props
 }) => {
   const EMPTY_SUBTASKS: TaskModalSubtaskProps['subtasks'] = [
-    { value: '' },
-    { value: '' },
+    { title: '', is_completed: false, id: NaN, task_id: NaN },
+    { title: '', is_completed: false, id: NaN, task_id: NaN },
   ];
 
   const SUBTASK_PLACEHOLDERS = [
@@ -156,38 +198,46 @@ const TaskModalSubtask: FC<TaskModalSubtaskProps> = ({
 
   const DEFAULT_SUBTASK_PLACEHOLDERS = 'Add new subtask';
 
-  const [subtasks, setSubtasks] = useState(subtaskList || EMPTY_SUBTASKS);
+  const { append, remove, fields } = useFieldArray({
+    control,
+    name: 'subtasks',
+  });
 
   return (
     <>
-      {subtasks.map((subtask, i) => (
-        <div className="subtask" key={crypto.randomUUID()}>
-          <TextInput
-            name="subtask"
-            label={i === 0 ? 'Subtasks' : ''}
-            placeholder={
-              SUBTASK_PLACEHOLDERS[i] || DEFAULT_SUBTASK_PLACEHOLDERS
-            }
-          />
+      {fields.map((subtask, index) => {
+        return (
+          <div className="subtask" key={subtask.id}>
+            <Controller
+              name={`subtasks.${index}.title`}
+              control={control}
+              render={({ field, formState: { errors } }) => (
+                <TextInput
+                  label={index === 0 ? 'Subtasks' : ''}
+                  placeholder={
+                    SUBTASK_PLACEHOLDERS[index] || DEFAULT_SUBTASK_PLACEHOLDERS
+                  }
+                  value={field.name ?? ''}
+                  {...field}
+                />
+              )}
+            />
 
-          <button
-            className="remove-action"
-            onClick={() => {
-              setSubtasks((subtasks) =>
-                subtasks.filter((subtask, subtaskIndex) => subtaskIndex !== i)
-              );
-            }}
-          >
-            <span>X</span>
-          </button>
-        </div>
-      ))}
+            <button
+              className="remove-action"
+              onClick={() => {
+                remove(index);
+              }}
+            >
+              <span>X</span>
+            </button>
+          </div>
+        );
+      })}
       <Button
         size="small"
         variant="secondary"
-        onClick={() =>
-          setSubtasks((subtasks) => [...subtasks, { value: 'Enter a subtask' }])
-        }
+        onClick={() => append({ title: '', is_completed: false })}
       >
         Add New Subtask
       </Button>
