@@ -2,21 +2,45 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ColumnEntity {
+  id: Int!
+  baord_id: Int!
+  name: String!
+  color: String
+  order: Int
+  done_column: Boolean
+  created_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type BoardEntity {
   """Board ID"""
   id: ID!
   name: String!
+
+  """Created at date"""
+  created_at: DateTime!
+  columns: [ColumnEntity!]!
 }
 
 type Query {
   boards: [BoardEntity!]!
   board(id: Int!): BoardEntity!
+  columns: [ColumnEntity!]!
+  column(id: Int!): ColumnEntity!
 }
 
 type Mutation {
   createBoard(createBoardInput: CreateBoardInput!): BoardEntity!
   updateBoard(updateBoardInput: UpdateBoardInput!): BoardEntity!
   removeBoard(id: Int!): BoardEntity!
+  createColumn(createColumnInput: CreateColumnInput!): ColumnEntity!
+  updateColumn(updateColumnInput: UpdateColumnInput!): ColumnEntity!
+  removeColumn(id: Int!): ColumnEntity!
 }
 
 input CreateBoardInput {
@@ -27,5 +51,20 @@ input CreateBoardInput {
 input UpdateBoardInput {
   """Board name"""
   name: String
+  id: Int!
+}
+
+input CreateColumnInput {
+  name: String!
+  color: String
+  order: Int
+  done_column: Boolean
+}
+
+input UpdateColumnInput {
+  name: String
+  color: String
+  order: Int
+  done_column: Boolean
   id: Int!
 }

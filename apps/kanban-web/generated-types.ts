@@ -31,13 +31,28 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
 };
 
 export type BoardEntity = {
   __typename?: 'BoardEntity';
+  columns: Array<ColumnEntity>;
+  /** Created at date */
+  created_at: Scalars['DateTime'];
   /** Board ID */
   id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type ColumnEntity = {
+  __typename?: 'ColumnEntity';
+  baord_id: Scalars['Int'];
+  color?: Maybe<Scalars['String']>;
+  created_at: Scalars['DateTime'];
+  done_column?: Maybe<Scalars['Boolean']>;
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  order?: Maybe<Scalars['Int']>;
 };
 
 export type CreateBoardInput = {
@@ -45,11 +60,21 @@ export type CreateBoardInput = {
   name: Scalars['String'];
 };
 
+export type CreateColumnInput = {
+  color?: InputMaybe<Scalars['String']>;
+  done_column?: InputMaybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  order?: InputMaybe<Scalars['Int']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: BoardEntity;
+  createColumn: ColumnEntity;
   removeBoard: BoardEntity;
+  removeColumn: ColumnEntity;
   updateBoard: BoardEntity;
+  updateColumn: ColumnEntity;
 };
 
 
@@ -58,7 +83,17 @@ export type MutationCreateBoardArgs = {
 };
 
 
+export type MutationCreateColumnArgs = {
+  createColumnInput: CreateColumnInput;
+};
+
+
 export type MutationRemoveBoardArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationRemoveColumnArgs = {
   id: Scalars['Int'];
 };
 
@@ -67,14 +102,26 @@ export type MutationUpdateBoardArgs = {
   updateBoardInput: UpdateBoardInput;
 };
 
+
+export type MutationUpdateColumnArgs = {
+  updateColumnInput: UpdateColumnInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   board: BoardEntity;
   boards: Array<BoardEntity>;
+  column: ColumnEntity;
+  columns: Array<ColumnEntity>;
 };
 
 
 export type QueryBoardArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryColumnArgs = {
   id: Scalars['Int'];
 };
 
@@ -84,17 +131,33 @@ export type UpdateBoardInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
-export type AllBoardDataFragment = { __typename?: 'BoardEntity', id: string, name: string };
+export type UpdateColumnInput = {
+  color?: InputMaybe<Scalars['String']>;
+  done_column?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['Int'];
+  name?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['Int']>;
+};
+
+export type AllBoardDataFragment = { __typename?: 'BoardEntity', id: string, name: string, created_at: any };
 
 export type ListBoardsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ListBoardsQuery = { __typename?: 'Query', boards: Array<{ __typename?: 'BoardEntity', id: string, name: string }> };
 
+export type RetrieveBoardQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: 'BoardEntity', id: string, name: string, created_at: any, columns: Array<{ __typename?: 'ColumnEntity', id: number, name: string, color?: string | null, order?: number | null, done_column?: boolean | null, created_at: any }> } };
+
 export const AllBoardDataFragmentDoc = `
     fragment AllBoardData on BoardEntity {
   id
   name
+  created_at
 }
     `;
 export const ListBoardsDocument = `
@@ -115,5 +178,34 @@ export const useListBoardsQuery = <
     useQuery<ListBoardsQuery, TError, TData>(
       variables === undefined ? ['ListBoards'] : ['ListBoards', variables],
       fetcher<ListBoardsQuery, ListBoardsQueryVariables>(ListBoardsDocument, variables),
+      options
+    );
+export const RetrieveBoardDocument = `
+    query RetrieveBoard($id: Int!) {
+  board(id: $id) {
+    id
+    name
+    columns {
+      id
+      name
+      color
+      order
+      done_column
+      created_at
+    }
+    created_at
+  }
+}
+    `;
+export const useRetrieveBoardQuery = <
+      TData = RetrieveBoardQuery,
+      TError = unknown
+    >(
+      variables: RetrieveBoardQueryVariables,
+      options?: UseQueryOptions<RetrieveBoardQuery, TError, TData>
+    ) =>
+    useQuery<RetrieveBoardQuery, TError, TData>(
+      ['RetrieveBoard', variables],
+      fetcher<RetrieveBoardQuery, RetrieveBoardQueryVariables>(RetrieveBoardDocument, variables),
       options
     );

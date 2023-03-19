@@ -6,10 +6,12 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { BoardsModule } from '../modules/boards/boards.module';
 import { PrismaModule } from '../common/services/database/prisma.module';
+import { ColumnsModule } from '../modules/columns/columns.module';
 
 @Module({
   imports: [
     BoardsModule,
+    ColumnsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'apps/kanban-web/schema.gql'),

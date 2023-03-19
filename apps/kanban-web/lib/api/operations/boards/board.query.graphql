@@ -1,11 +1,28 @@
 fragment AllBoardData on BoardEntity {
   id
   name
+  created_at
 }
 
 query ListBoards {
   boards {
     id
     name
+  }
+}
+
+query RetrieveBoard($id: Int!) {
+  board(id: $id) {
+    id
+    name
+    columns {
+      id
+      name
+      color
+      order
+      done_column
+      created_at
+    }
+    created_at
   }
 }

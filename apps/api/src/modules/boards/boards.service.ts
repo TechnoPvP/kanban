@@ -23,8 +23,11 @@ export class BoardsService {
     return boards;
   }
 
-  async retrieve(id: number) {
-    const board = await this.prisma.board.findUnique({ where: { id } });
+  async retrieve(id: number): Promise<BoardEntity> {
+    const board = await this.prisma.board.findUnique({
+      where: { id },
+      include: { columns: true },
+    });
 
     return board;
   }

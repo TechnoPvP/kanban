@@ -4,12 +4,14 @@ import classNames from 'classnames';
 export interface ButtonProps extends PropsWithChildren {
   variant?: 'primary' | 'secondary' | 'danger';
   size?: 'large' | 'small';
+  disabled?: boolean;
   onClick?: () => void;
 }
 
 export const Button: FC<ButtonProps> = ({
-  variant = 'purple',
+  variant = 'primary',
   size = 'large',
+  disabled = false,
   onClick,
   children,
   ...props
@@ -17,6 +19,7 @@ export const Button: FC<ButtonProps> = ({
   return (
     <>
       <button
+        disabled={disabled}
         className={classNames(`size--${size}`, `variant--${variant}`)}
         onClick={onClick}
       >
@@ -37,6 +40,10 @@ export const Button: FC<ButtonProps> = ({
           outline: none;
           background-color: transparent;
           cursor: pointer;
+
+          &:disabled {
+            opacity: 0.5;
+          }
         }
 
         .size {
@@ -57,7 +64,7 @@ export const Button: FC<ButtonProps> = ({
             background-color: var(--color-purple);
           }
 
-          &--primary:hover {
+          &--primary:not(:disabled):hover {
             background-color: var(--color-purple-hover);
           }
 
@@ -66,7 +73,7 @@ export const Button: FC<ButtonProps> = ({
             color: var(--color-purple);
           }
 
-          &--secondary:hover {
+          &--secondary:not(:disabled):hover {
             background: rgba(99, 95, 199, 0.25);
           }
 
