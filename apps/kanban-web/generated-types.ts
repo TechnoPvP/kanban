@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -53,6 +53,7 @@ export type ColumnEntity = {
   id: Scalars['Int'];
   name: Scalars['String'];
   order?: Maybe<Scalars['Int']>;
+  tasks: Array<TaskEntity>;
 };
 
 export type CreateBoardInput = {
@@ -67,14 +68,23 @@ export type CreateColumnInput = {
   order?: InputMaybe<Scalars['Int']>;
 };
 
+export type CreateTaskInput = {
+  created_at?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  status: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: BoardEntity;
   createColumn: ColumnEntity;
+  createTask: TaskEntity;
   removeBoard: BoardEntity;
   removeColumn: ColumnEntity;
+  removeTask: TaskEntity;
   updateBoard: BoardEntity;
   updateColumn: ColumnEntity;
+  updateTask: TaskEntity;
 };
 
 
@@ -88,12 +98,22 @@ export type MutationCreateColumnArgs = {
 };
 
 
+export type MutationCreateTaskArgs = {
+  createTaskInput: CreateTaskInput;
+};
+
+
 export type MutationRemoveBoardArgs = {
   id: Scalars['Int'];
 };
 
 
 export type MutationRemoveColumnArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationRemoveTaskArgs = {
   id: Scalars['Int'];
 };
 
@@ -107,12 +127,19 @@ export type MutationUpdateColumnArgs = {
   updateColumnInput: UpdateColumnInput;
 };
 
+
+export type MutationUpdateTaskArgs = {
+  updateTaskInput: UpdateTaskInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   board: BoardEntity;
   boards: Array<BoardEntity>;
   column: ColumnEntity;
   columns: Array<ColumnEntity>;
+  task: TaskEntity;
+  tasks: Array<TaskEntity>;
 };
 
 
@@ -123,6 +150,20 @@ export type QueryBoardArgs = {
 
 export type QueryColumnArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryTaskArgs = {
+  id: Scalars['Int'];
+};
+
+export type TaskEntity = {
+  __typename?: 'TaskEntity';
+  column_id: Scalars['Int'];
+  created_at: Scalars['DateTime'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  status: Scalars['String'];
 };
 
 export type UpdateBoardInput = {
@@ -139,6 +180,13 @@ export type UpdateColumnInput = {
   order?: InputMaybe<Scalars['Int']>;
 };
 
+export type UpdateTaskInput = {
+  created_at?: InputMaybe<Scalars['String']>;
+  id: Scalars['Int'];
+  name?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
+};
+
 export type AllBoardDataFragment = { __typename?: 'BoardEntity', id: string, name: string, created_at: any };
 
 export type ListBoardsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -151,7 +199,15 @@ export type RetrieveBoardQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: 'BoardEntity', id: string, name: string, created_at: any, columns: Array<{ __typename?: 'ColumnEntity', id: number, name: string, color?: string | null, order?: number | null, done_column?: boolean | null, created_at: any }> } };
+export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: 'BoardEntity', id: string, name: string, created_at: any, columns: Array<{ __typename?: 'ColumnEntity', id: number, name: string, color?: string | null, order?: number | null, done_column?: boolean | null, created_at: any, tasks: Array<{ __typename?: 'TaskEntity', id: number, name: string, status: string }> }> } };
+
+export type CreateTaskMutationVariables = Exact<{
+  name: Scalars['String'];
+  status: Scalars['String'];
+}>;
+
+
+export type CreateTaskMutation = { __typename?: 'Mutation', createTask: { __typename?: 'TaskEntity', id: number, name: string, status: string, created_at: any } };
 
 export const AllBoardDataFragmentDoc = `
     fragment AllBoardData on BoardEntity {
@@ -192,6 +248,11 @@ export const RetrieveBoardDocument = `
       order
       done_column
       created_at
+      tasks {
+        id
+        name
+        status
+      }
     }
     created_at
   }
@@ -207,5 +268,24 @@ export const useRetrieveBoardQuery = <
     useQuery<RetrieveBoardQuery, TError, TData>(
       ['RetrieveBoard', variables],
       fetcher<RetrieveBoardQuery, RetrieveBoardQueryVariables>(RetrieveBoardDocument, variables),
+      options
+    );
+export const CreateTaskDocument = `
+    mutation CreateTask($name: String!, $status: String!) {
+  createTask(createTaskInput: {name: $name, status: $status}) {
+    id
+    name
+    status
+    created_at
+  }
+}
+    `;
+export const useCreateTaskMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateTaskMutation, TError, CreateTaskMutationVariables, TContext>) =>
+    useMutation<CreateTaskMutation, TError, CreateTaskMutationVariables, TContext>(
+      ['CreateTask'],
+      (variables?: CreateTaskMutationVariables) => fetcher<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument, variables)(),
       options
     );

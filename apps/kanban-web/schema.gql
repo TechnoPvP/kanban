@@ -2,13 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ColumnEntity {
+type TaskEntity {
   id: Int!
-  baord_id: Int!
   name: String!
-  color: String
-  order: Int
-  done_column: Boolean
+  status: String!
+  column_id: Int!
   created_at: DateTime!
 }
 
@@ -16,6 +14,17 @@ type ColumnEntity {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type ColumnEntity {
+  id: Int!
+  baord_id: Int!
+  name: String!
+  color: String
+  order: Int
+  done_column: Boolean
+  tasks: [TaskEntity!]!
+  created_at: DateTime!
+}
 
 type BoardEntity {
   """Board ID"""
@@ -32,6 +41,8 @@ type Query {
   board(id: Int!): BoardEntity!
   columns: [ColumnEntity!]!
   column(id: Int!): ColumnEntity!
+  tasks: [TaskEntity!]!
+  task(id: Int!): TaskEntity!
 }
 
 type Mutation {
@@ -41,6 +52,9 @@ type Mutation {
   createColumn(createColumnInput: CreateColumnInput!): ColumnEntity!
   updateColumn(updateColumnInput: UpdateColumnInput!): ColumnEntity!
   removeColumn(id: Int!): ColumnEntity!
+  createTask(createTaskInput: CreateTaskInput!): TaskEntity!
+  updateTask(updateTaskInput: UpdateTaskInput!): TaskEntity!
+  removeTask(id: Int!): TaskEntity!
 }
 
 input CreateBoardInput {
@@ -66,5 +80,18 @@ input UpdateColumnInput {
   color: String
   order: Int
   done_column: Boolean
+  id: Int!
+}
+
+input CreateTaskInput {
+  name: String!
+  status: String!
+  created_at: String
+}
+
+input UpdateTaskInput {
+  name: String
+  status: String
+  created_at: String
   id: Int!
 }

@@ -5,12 +5,14 @@ export interface ButtonProps extends PropsWithChildren {
   variant?: 'primary' | 'secondary' | 'danger';
   size?: 'large' | 'small';
   disabled?: boolean;
+  type?: "submit" | "button"
   onClick?: () => void;
 }
 
 export const Button: FC<ButtonProps> = ({
   variant = 'primary',
   size = 'large',
+  type = 'button',
   disabled = false,
   onClick,
   children,
@@ -20,6 +22,7 @@ export const Button: FC<ButtonProps> = ({
     <>
       <button
         disabled={disabled}
+        type={type}
         className={classNames(`size--${size}`, `variant--${variant}`)}
         onClick={onClick}
       >
@@ -48,12 +51,13 @@ export const Button: FC<ButtonProps> = ({
 
         .size {
           &--large {
-            min-height: 48px;
+            height: 48px;
             font-size: var(--text-md);
             border-radius: 24px;
           }
 
           &--small {
+            height: 40px;
             font-size: var(--text-body);
             border-radius: var(--radius-button-sm);
           }

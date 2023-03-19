@@ -22,6 +22,11 @@ query RetrieveBoard($id: Int!) {
       order
       done_column
       created_at
+      tasks {
+        id
+        name
+        status
+      }
     }
     created_at
   }

@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Column } from '@prisma/client';
+import { TaskEntity } from '../../tasks/entities/task.entity';
 import { CreateColumnInput } from '../dto/create-column.input';
 
 @ObjectType()
@@ -21,6 +22,9 @@ export class ColumnEntity implements Column {
 
   @Field(() => Boolean, { nullable: true })
   done_column: boolean;
+
+  @Field(() => [TaskEntity])
+  tasks: TaskEntity[];
 
   @Field()
   created_at: Date;

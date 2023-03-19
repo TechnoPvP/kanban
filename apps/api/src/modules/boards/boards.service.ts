@@ -26,7 +26,7 @@ export class BoardsService {
   async retrieve(id: number): Promise<BoardEntity> {
     const board = await this.prisma.board.findUnique({
       where: { id },
-      include: { columns: true },
+      include: { columns: { include: { tasks: true } } },
     });
 
     return board;

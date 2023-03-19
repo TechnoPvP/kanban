@@ -12,6 +12,7 @@ const BoardColumn: FC<BoardColumnProps> = ({
   color,
   isDoneColumn,
   tasks,
+  children,
   ...props
 }) => {
   return (
@@ -23,11 +24,15 @@ const BoardColumn: FC<BoardColumnProps> = ({
             {name} ({tasks || 0})
           </div>
         </header>
+
+        <div className="tasks">{children}</div>
       </div>
 
       <style jsx>{`
         .column {
           display: flex;
+          flex: 0 0 auto;
+          min-width: 320px;
           flex-direction: column;
           gap: 20px;
         }
@@ -39,7 +44,7 @@ const BoardColumn: FC<BoardColumnProps> = ({
 
           &__color {
             border-radius: 50%;
-            background-color: ${color};
+            background-color: color;
             width: 15px;
             height: 15px;
           }
@@ -50,6 +55,12 @@ const BoardColumn: FC<BoardColumnProps> = ({
             color: var(--color-md-gray);
             text-transform: uppercase;
           }
+        }
+
+        .tasks {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
         }
       `}</style>
     </>

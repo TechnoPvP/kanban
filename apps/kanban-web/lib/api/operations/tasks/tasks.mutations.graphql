@@ -1,0 +1,8 @@
+mutation CreateTask($name: String!, $status: String!) {
+  createTask(createTaskInput: { name: $name, status: $status }) {
+    id
+    name
+    status
+    created_at
+  }
+}
