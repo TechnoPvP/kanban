@@ -1,0 +1,31 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type BoardEntity {
+  """Board ID"""
+  id: ID!
+  name: String!
+}
+
+type Query {
+  boards: [BoardEntity!]!
+  board(id: Int!): BoardEntity!
+}
+
+type Mutation {
+  createBoard(createBoardInput: CreateBoardInput!): BoardEntity!
+  updateBoard(updateBoardInput: UpdateBoardInput!): BoardEntity!
+  removeBoard(id: Int!): BoardEntity!
+}
+
+input CreateBoardInput {
+  """Board name"""
+  name: String!
+}
+
+input UpdateBoardInput {
+  """Board name"""
+  name: String
+  id: Int!
+}
