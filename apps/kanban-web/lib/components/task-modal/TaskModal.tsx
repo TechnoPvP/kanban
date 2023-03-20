@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Overlay, TextInput } from '@kanban/client/ui';
+import { Button, Overlay, TextInput, Select, Option } from '@kanban/client/ui';
 import { SubtaskEntity, TaskEntity } from '../../../generated-types';
 import { FC, useRef, useState } from 'react';
 import {
@@ -121,6 +121,12 @@ const TaskModal: FC<TaskModalProps> = ({
             showPlaceholderSubtasks={variant === 'create' ? true : false}
           />
         </div>
+
+        <Select name="status">
+            <Option value="To-do">To-Do</Option>
+            <Option value="Working">Working</Option>
+            <Option value="Done">Done</Option>
+        </Select>
 
         <Button type="submit" size="small" variant="primary">
           {isCreateModal ? 'Create Task' : 'Save Changes'}
