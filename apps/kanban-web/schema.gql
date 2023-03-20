@@ -80,6 +80,7 @@ input CreateColumnInput {
   name: String!
   color: String
   order: Int
+  baord_id: Int!
   done_column: Boolean
 }
 
@@ -87,6 +88,7 @@ input UpdateColumnInput {
   name: String
   color: String
   order: Int
+  baord_id: Int
   done_column: Boolean
   id: Int!
 }

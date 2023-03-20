@@ -62,6 +62,7 @@ export type CreateBoardInput = {
 };
 
 export type CreateColumnInput = {
+  baord_id: Scalars['Int'];
   color?: InputMaybe<Scalars['String']>;
   done_column?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
@@ -183,6 +184,7 @@ export type UpdateBoardInput = {
 };
 
 export type UpdateColumnInput = {
+  baord_id?: InputMaybe<Scalars['Int']>;
   color?: InputMaybe<Scalars['String']>;
   done_column?: InputMaybe<Scalars['Boolean']>;
   id: Scalars['Int'];
@@ -211,6 +213,16 @@ export type RetrieveBoardQueryVariables = Exact<{
 
 
 export type RetrieveBoardQuery = { __typename?: 'Query', board: { __typename?: 'BoardEntity', id: string, name: string, created_at: any, columns: Array<{ __typename?: 'ColumnEntity', id: number, name: string, color?: string | null, order?: number | null, done_column?: boolean | null, created_at: any, tasks: Array<{ __typename?: 'TaskEntity', id: number, name: string, status: string, column_id: number, created_at: any }> }> } };
+
+export type CreateColumnMutationVariables = Exact<{
+  name: Scalars['String'];
+  color: Scalars['String'];
+  done_column: Scalars['Boolean'];
+  board_id: Scalars['Int'];
+}>;
+
+
+export type CreateColumnMutation = { __typename?: 'Mutation', createColumn: { __typename?: 'ColumnEntity', name: string, color?: string | null, done_column?: boolean | null, id: number, order?: number | null, baord_id: number } };
 
 export type CreateTaskMutationVariables = Exact<{
   name: Scalars['String'];
@@ -293,6 +305,29 @@ export const useRetrieveBoardQuery = <
     useQuery<RetrieveBoardQuery, TError, TData>(
       ['RetrieveBoard', variables],
       fetcher<RetrieveBoardQuery, RetrieveBoardQueryVariables>(RetrieveBoardDocument, variables),
+      options
+    );
+export const CreateColumnDocument = `
+    mutation CreateColumn($name: String!, $color: String!, $done_column: Boolean!, $board_id: Int!) {
+  createColumn(
+    createColumnInput: {name: $name, color: $color, done_column: $done_column, baord_id: $board_id}
+  ) {
+    name
+    color
+    done_column
+    id
+    order
+    baord_id
+  }
+}
+    `;
+export const useCreateColumnMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateColumnMutation, TError, CreateColumnMutationVariables, TContext>) =>
+    useMutation<CreateColumnMutation, TError, CreateColumnMutationVariables, TContext>(
+      ['CreateColumn'],
+      (variables?: CreateColumnMutationVariables) => fetcher<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, variables)(),
       options
     );
 export const CreateTaskDocument = `

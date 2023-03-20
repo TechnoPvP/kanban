@@ -14,12 +14,9 @@ export class CreateColumnInput
   @Field(() => Int, { nullable: true })
   order: number;
 
+  @Field(() => Int, { nullable: false })
+  baord_id: number;
+
   @Field(() => Boolean, { nullable: true })
   done_column?: boolean;
-
-  created_at?: string | Date;
-
-  tasks?: Prisma.TaskCreateNestedManyWithoutColumnInput;
-
-  board?: Prisma.BoardCreateNestedOneWithoutColumnsInput;
 }

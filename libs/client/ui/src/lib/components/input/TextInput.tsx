@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { FC, forwardRef, PropsWithRef } from 'react';
+import React, { CSSProperties, FC, forwardRef, PropsWithRef } from 'react';
 
 export interface TextInputProps {
   label?: string;
@@ -8,7 +8,10 @@ export interface TextInputProps {
   name: string;
   error?: string;
   fullWidth?: boolean;
+  readOnly?: boolean;
+  cursor?: CSSProperties['cursor'];
   onBlur?: () => void;
+  onClick?: () => void;
   onChange?: (value: string) => void;
 }
 
@@ -16,13 +19,16 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (
     {
       fullWidth = true,
+      readOnly = false,
       label,
       placeholder,
       value,
       name,
       error,
+      cursor = "text",
       onChange,
       onBlur,
+      onClick,
       ...props
     },
     ref
@@ -34,6 +40,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             'input-container',
             fullWidth && 'input--full-width'
           )}
+          onClick={onClick}
         >
           {label && <label htmlFor="">{label}</label>}
 
@@ -43,6 +50,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             type="text"
             placeholder={placeholder}
             value={value}
+            readOnly={readOnly}
             name={name}
             onChange={({ target }) => onChange && onChange(target.value)}
             onBlur={onBlur}
@@ -69,6 +77,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             border-radius: 4px;
             padding: 8px 16px;
             color: var(--color-black);
+            cursor: ${cursor};
 
             &--error {
               border: 1px solid var(--color-red);

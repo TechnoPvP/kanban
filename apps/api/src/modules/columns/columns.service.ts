@@ -9,7 +9,14 @@ export class ColumnsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createColumnInput: CreateColumnInput) {
-    const column = await this.prisma.column.create({ data: createColumnInput });
+    const board = await this.prisma.board.findUnique({
+      where: { id: createColumnInput.baord_id },
+      include: { columns: { select: { _count: true } } },
+    });
+
+    const column = await this.prisma.column.create({
+      data: { ...createColumnInput, order: board.columns.length + 1 },
+    });
 
     return column;
   }

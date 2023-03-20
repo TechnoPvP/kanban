@@ -35,6 +35,8 @@ const BoardColumn: FC<BoardColumnProps> = ({
           min-width: 320px;
           flex-direction: column;
           gap: 20px;
+          height: 100%;
+          overflow-y: auto;
         }
 
         .header {

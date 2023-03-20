@@ -28,17 +28,18 @@ const RootLayout: FC<RootLayoutProps> = ({ children, ...props }) => {
 
       <style jsx>{`
         .layout {
+          position: relative;
           display: grid;
           grid-template-columns: auto 1fr;
+          grid-template-rows: 1fr;
           height: 100%;
           width: 100%;
-          border: 1px solid green;
-          height: 100vh;
         }
 
         main {
+          position: relative;
           width: 100%;
-          height: 100%;
+          overflow: auto;
           background-color: var(--color-light-gray);
         }
       `}</style>

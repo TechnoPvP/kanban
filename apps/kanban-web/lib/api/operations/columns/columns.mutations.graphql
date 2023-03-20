@@ -1,0 +1,22 @@
+mutation CreateColumn(
+  $name: String!
+  $color: String!
+  $done_column: Boolean!
+  $board_id: Int!
+) {
+  createColumn(
+    createColumnInput: {
+      name: $name
+      color: $color
+      done_column: $done_column
+      baord_id: $board_id
+    }
+  ) {
+    name
+    color
+    done_column
+    id
+    order
+    baord_id
+  }
+}

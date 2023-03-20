@@ -1,6 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Overlay, TextInput, Select, Option } from '@kanban/client/ui';
-import { SubtaskEntity, TaskEntity } from '../../../generated-types';
+import {
+  ColumnEntity,
+  SubtaskEntity,
+  TaskEntity,
+} from '../../../generated-types';
 import { FC, useRef, useState } from 'react';
 import {
   Control,
@@ -17,6 +21,7 @@ export interface TaskModalProps {
   variant: 'update' | 'create';
   onClose: () => void;
   defaultValues?: TaskEntity;
+  statuses: { name: string; id: number }[];
   /**
    * Primary action would either be to create or update the task
    */
@@ -35,6 +40,7 @@ export const createTaskSchema = z.object({
     })
     .array()
     .optional(),
+  status: z.number(),
 });
 
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
@@ -43,6 +49,7 @@ const TaskModal: FC<TaskModalProps> = ({
   onPrimaryAction,
   defaultValues,
   variant,
+  statuses,
   ...props
 }) => {
   const {
@@ -56,7 +63,11 @@ const TaskModal: FC<TaskModalProps> = ({
     resolver: zodResolver(createTaskSchema),
     mode: 'all',
     reValidateMode: 'onChange',
-    defaultValues: { title: defaultValues?.name ?? '', description: '' },
+    defaultValues: {
+      title: defaultValues?.name ?? '',
+      description: '',
+      status: defaultValues?.column_id,
+    },
   });
 
   const handleSuccessfulSubmit: SubmitHandler<CreateTaskSchema> = async (
@@ -67,8 +78,6 @@ const TaskModal: FC<TaskModalProps> = ({
     const response = await onPrimaryAction({
       data: { ...data, id: defaultValues?.id },
     });
-
-    console.log(response);
   };
 
   const handleInvalidSubmit: SubmitErrorHandler<CreateTaskSchema> = (error) => {
@@ -122,11 +131,19 @@ const TaskModal: FC<TaskModalProps> = ({
           />
         </div>
 
-        <Select name="status">
-            <Option value="To-do">To-Do</Option>
-            <Option value="Working">Working</Option>
-            <Option value="Done">Done</Option>
-        </Select>
+        <Controller
+          name="status"
+          control={control}
+          render={({ field, formState: { errors } }) => (
+            <Select {...field}>
+              {statuses.map((status) => (
+                <Option label={status.name} value={status.id} key={status.id}>
+                  {status.name}
+                </Option>
+              ))}
+            </Select>
+          )}
+        />
 
         <Button type="submit" size="small" variant="primary">
           {isCreateModal ? 'Create Task' : 'Save Changes'}
